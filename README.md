@@ -9,7 +9,9 @@
 
 ## About this project
 
-
+After initializing a new Laravel project, install the package with `composer require shevtsovtn/get-sitemap`
+You can test the creation of a site map with the command: `php artisan create:sitemap {file_type} {file_path?}`
+The command will automatically find GET routes and create a sitemap.
 
 ## License
 
