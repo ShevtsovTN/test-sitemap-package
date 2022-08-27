@@ -13,21 +13,22 @@ class CreateSitemap extends Command
      *
      * @var string
      */
-    protected $signature = 'create:sitemap';
+    protected $signature = 'create:sitemap {file_type} {file_path?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'This command creates a sitemap file in one of three extensions';
 
     /**
      * Execute the console command.
      *
+     * @param Router $router
      * @return void
      */
-    public function handle(Router $router)
+    public function handle(Router $router): void
     {
         $routes = collect($router->getRoutes())->map(function ($route) {
             if ($route->methods[0] == 'GET') {
@@ -39,6 +40,6 @@ class CreateSitemap extends Command
                 ];
             }
         })->filter()->all();
-        SitemapFacade::create(file_type: 'json', file_path: public_path(), sitemap_data: $routes);
+        SitemapFacade::create(file_type: $this->argument('file_type'), file_path: $this->argument('file_path')?? public_path(), sitemap_data: $routes);
     }
 }
