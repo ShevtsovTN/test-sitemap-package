@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Dto\SitemapDataDto;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Routing\Router;
 use Sitemap\SitemapFacade;
@@ -13,7 +15,7 @@ class CreateSitemap extends Command
      *
      * @var string
      */
-    protected $signature = 'create:sitemap {file_type} {file_path?}';
+    protected $signature = 'create:sitemap {file_type} {file_path}';
 
     /**
      * The console command description.
@@ -25,21 +27,23 @@ class CreateSitemap extends Command
     /**
      * Execute the console command.
      *
-     * @param Router $router
      * @return void
+     * @throws Exception
      */
-    public function handle(Router $router): void
+    public function handle(): void
     {
-        $routes = collect($router->getRoutes())->map(function ($route) {
-            if ($route->methods[0] == 'GET') {
-                return [
-                    'loc' => $route->uri(),
-                    'lastmod' => date('Y-m-d'),
-                    'priority' => 1,
-                    'changefreq' => 'hourly'
-                ];
+        if (!file_exists($this->argument('file_path'))) {
+            try {
+                mkdir(dirname($this->argument('file_path')));
+            } catch (Exception $e) {
+                throw new Exception('Directory creating failure.', 400);
             }
-        })->filter()->all();
-        SitemapFacade::create(file_type: $this->argument('file_type'), file_path: $this->argument('file_path')?? public_path(), sitemap_data: $routes);
+        }
+        $routes = SitemapDataDto::getFromStorage();
+        SitemapFacade::create(
+            file_type: $this->argument('file_type'),
+            file_path: $this->argument('file_path'),
+            sitemap_data: $routes->routes
+        );
     }
 }

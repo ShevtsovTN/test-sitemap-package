@@ -1,8 +1,0 @@
-loc,lastmod,priority,changefreq
-sanctum/csrf-cookie,2022-08-27,1,hourly
-_ignition/health-check,2022-08-27,1,hourly
-api/user,2022-08-27,1,hourly
-users,2022-08-27,1,hourly
-users/create,2022-08-27,1,hourly
-users/{user},2022-08-27,1,hourly
-users/{user}/edit,2022-08-27,1,hourly
