@@ -32,9 +32,10 @@ class CreateSitemap extends Command
      */
     public function handle(): void
     {
-        if (!file_exists($this->argument('file_path'))) {
+        $dirname = dirname($this->argument('file_path'));
+        if (!is_dir($dirname) && !is_file($this->argument('file_path'))) {
             try {
-                mkdir(dirname($this->argument('file_path')));
+                mkdir($dirname);
             } catch (Exception $e) {
                 throw new Exception('Directory creating failure.', 400);
             }
@@ -42,7 +43,7 @@ class CreateSitemap extends Command
         $routes = SitemapDataDto::getFromStorage();
         SitemapFacade::create(
             file_type: $this->argument('file_type'),
-            file_path: $this->argument('file_path'),
+            file_path: $dirname,
             sitemap_data: $routes->routes
         );
     }
